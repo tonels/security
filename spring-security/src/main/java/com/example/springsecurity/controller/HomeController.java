@@ -1,22 +1,20 @@
 package com.example.springsecurity.controller;
 
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.example.springsecurity.security.SecurityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 @RestController
 @RequestMapping
 public class HomeController {
 
-    @GetMapping("/index")
+
+    @GetMapping("/")
     public String index() {
-        return "<h1> Welcome Tonels</h1>";
+        return "<h1>" +SecurityUtils.getCurrentUserLogin();
     }
 
     @GetMapping("/user")
@@ -38,18 +36,18 @@ public class HomeController {
      */
     @GetMapping("/currentUser")
     public String currentUser(HttpServletRequest request) {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return Optional.ofNullable(securityContext.getAuthentication())
-                .map(authentication -> {
-                    if (authentication.getPrincipal() instanceof UserDetails) {
-                        UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-                        return springSecurityUser.getUsername();
-                    } else if (authentication.getPrincipal() instanceof String) {
-                        return (String) authentication.getPrincipal();
-                    }
-                    return null;
-                }).orElse(null);
+        return SecurityUtils.getCurrentUserLogin();
     }
+
+    /**
+     * todo
+     * 在 securityConfig中配置 logout
+     * 是不需要单独定义接口的？？
+     */
+//    @GetMapping("/logout")
+//    public void logout(){
+//
+//    }
 
 
 }
