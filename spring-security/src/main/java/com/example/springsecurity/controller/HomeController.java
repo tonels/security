@@ -1,53 +1,37 @@
 package com.example.springsecurity.controller;
 
+import com.example.springsecurity.repository.UserRepository;
 import com.example.springsecurity.security.SecurityUtils;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Resource;
+import java.util.Locale;
 
-@RestController
-@RequestMapping
+@Controller
 public class HomeController {
 
+    @Resource
+    private UserRepository userRepository;
 
-    @GetMapping("/")
-    public String index() {
-        return "<h1>" +SecurityUtils.getCurrentUserLogin();
+    @RequestMapping(value = "/loggedUsers", method = RequestMethod.GET)
+    public String getLoggedUsers(final Locale locale, final Model model) {
+        model.addAttribute("users", userRepository.findAll());
+        return "users";
     }
 
-    @GetMapping("/user")
-    public String user() {
-        return "<h1> 普通用户的权限";
+    @RequestMapping(value = "/loggedUsersFromSessionRegistry", method = RequestMethod.GET)
+    public String getLoggedUsersFromSessionRegistry(final Locale locale, final Model model) {
+        model.addAttribute("users", SecurityUtils.getCurrentUserLogin());
+        return "users";
     }
 
-    @GetMapping("/admin")
-    public String admin() {
-        return "<h1> 管理员的的权限";
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index(final Locale locale, final Model model) {
+        model.addAttribute("users", SecurityUtils.getCurrentUserLogin());
+        return "users";
     }
-
-    /**
-     * 获取当前用户信息（userName）
-     * 无用户登陆时 返回 anonymousUser
-     *
-     * @param request
-     * @return
-     */
-    @GetMapping("/currentUser")
-    public String currentUser(HttpServletRequest request) {
-        return SecurityUtils.getCurrentUserLogin();
-    }
-
-    /**
-     * todo
-     * 在 securityConfig中配置 logout
-     * 是不需要单独定义接口的？？
-     */
-//    @GetMapping("/logout")
-//    public void logout(){
-//
-//    }
-
 
 }

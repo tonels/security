@@ -3,11 +3,13 @@ package com.example.springsecurity.security;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Component("loginFailureHandler")
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
